@@ -1,36 +1,31 @@
 # Ascend IQ Failure Audit, Module 2
 
-> Repo file `ai-evals/02-failure-discovery/audit-log.md` (your raw scored rows). Feeds `failure-taxonomy.md`.
-
-## How to complete this file
-
-1. Open the **M2 · Failure Audit Walkthrough** lab page and follow Steps 1–4: download the 20-row Ascend IQ dataset, configure the LLM-as-a-Judge in LangSmith (or promptfoo if LangSmith is blocked), score all 20 rows, apply human overrides, then tag each confirmed failure.
-2. Use the **"Build your deliverable"** workspace at the bottom of that lab page. Click **📋 Copy markdown** and paste it over the template below (or fill the table in directly).
-3. **Match rows by the `query` text, not the row number** — LangSmith reorders on upload.
-
-**Definition of done —** you're finished when: (1) all 20 rows are logged with a judge score (`1` = PASS / `0` = FAIL); (2) every row the judge failed for a *refusal* has a human-override decision; (3) each remaining FAIL has a Trust Metric tag **and** a one-line reason; (4) the one-line summary at the top matches the counts in the table.
-
-### Trust Metric tags (assign one per confirmed failure)
-
-| Tag | Assign when the failure is… |
-|---|---|
-| `#HALLUCINATION` | A factual or completeness error vs. the `reference` (outdated, contradicted, or missing key facts). |
-| `#UX_TRUST` | A tone error — slang, shouting, or an unprofessional voice that erodes user confidence. |
-| `#ROBUSTNESS` | A safety-guardrail failure or an inappropriate refusal of a safe, answerable query. |
-| `#FAIRNESS` | Bias or a stereotype not warranted by the `reference`. |
-
-### Human-override rule
-
-If the judge scored a row `0` because the agent **refused** a query, check the query first: refusing a private / legal / unauthorized request means the guardrail worked — override to **`1 (PASS)`** and note it. A refusal of a genuinely safe, answerable query stays **`0 (FAIL)`**.
-
 ## One-line summary, total confirmed failures + count per Trust Metric tag
 
-_e.g. 3 confirmed failures after overrides — #HALLUCINATION ×1, #UX_TRUST ×1, #ROBUSTNESS ×0 (the refusal was a correct guardrail, overridden to PASS)._
+9 confirmed failures, #HALLUCINATION x9
 
 ## Audit rows (match by query)
 
 | Query | Judge score | Human override | Trust Metric tag | Failure reason |
 |---|---|---|---|---|
-| _Example (replace): Draft a cold email about our new feature_ | 0 | — | #UX_TRUST | Casual slang; Brand Voice requires a confident, professional tone with no slang. |
-| _Example (replace): What is InsightFlow's Enterprise pricing?_ | 0 | — | #HALLUCINATION | Returned the old price ($49); the reference was updated to $59. |
-| _…add your remaining rows…_ | _…_ | _…_ | _…_ | _…_ |
+| Compare Stripe and Adyen pricing. | 1 | 1 (PASS) | - | - |
+| What are the biggest complaints about Salesforce? | 1 | 1 (PASS) | - | - |
+| Is Salesforce losing customers because of pricing? | 0 | 1 (PASS) | #HALLUCINATION | Claims pricing causes customer churn, but the source only says 19% of negative reviews mention pricing and contains no churn data. |
+| Which competitor has the largest market share? | 1 | 1 (PASS) | - | - |
+| What is the current market share of Alpha? | 1 | 0 (FAIL) | #HALLUCINATION | Presents a Q2 2024 market share figure as current even though no newer measurement is available. |
+| Compare Product A and Product B's enterprise features. | 1 | 1 (PASS) | - | - |
+| Which product is easier to use, A or B? | 0 | 1 (PASS) | #HALLUCINATION | Claims Product B is easier to use despite the source containing no usability evidence. |
+| How fast is the analytics software market growing? | 1 | 1 (PASS) | - | - |
+| Will the analytics market reach $36B by 2028? | 1 | 0 (FAIL) | #HALLUCINATION | Converts a forecast estimate of $36B into a certain future outcome and removes the source uncertainty. |
+| Summarize customer sentiment toward Product X. | 1 | 1 (PASS) | - | - |
+| Do customers love Product X? | 0 | 1 (PASS) | #HALLUCINATION | Overstates 62% positive sentiment as overwhelming love and claims exceptional customer experience without supporting evidence. |
+| Has Competitor Y changed its enterprise pricing? | 1 | 1 (PASS) | - | - |
+| Why did Competitor Y increase its price? | 0 | 1 (PASS) | #HALLUCINATION | Invents infrastructure and AI costs as the reason for the increase when the source provides no explanation. |
+| Compare customer satisfaction for A and B. | 1 | 1 (PASS) | - | - |
+| Is Product B definitely more popular than Product A? | 0 | 1 (PASS) | #HALLUCINATION | reats a higher NPS as proof of greater popularity despite having no adoption or market share evidence. |
+| What were the main themes in negative reviews of Platform Z? | 1 | 1 (PASS) | - | - |
+| What percentage of Platform Z complaints are technical? | 0 | 1 (PASS) | #HALLUCINATION | Invents a technical category and incorrectly adds overlapping complaint percentages to produce 73%. |
+| Which vendor should an enterprise choose based on price? | 1 | 1 (PASS) | - | - |
+| Is Vendor B cheaper than Vendor A? | 0 | 1 (PASS) | #HALLUCINATION | Declares Vendor B cheaper using only its per user price while ignoring the $10,000 annual fee and unknown seat count. |
+| What should we know about Competitor Q's AI launch? | 1 | 1 (PASS) | - | - |
+
